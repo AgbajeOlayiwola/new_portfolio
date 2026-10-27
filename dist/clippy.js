@@ -1,0 +1,18 @@
+'use strict';
+(()=>{
+const host=document.createElement('aside');host.className='clippy';host.setAttribute('aria-label','Clippy desktop guide');
+host.innerHTML=`<section class="clippy-bubble" id="clippy-bubble" aria-label="Desktop tips"><button class="clippy-dismiss" aria-label="Dismiss Clippy tips">×</button><strong>It looks like you're exploring a portfolio!</strong><p id="clippy-tip" aria-live="polite"></p><div class="clippy-actions"><button class="xp-button" id="clippy-go">Show me</button><button class="xp-button" id="clippy-next">Next tip</button></div></section><button class="clippy-character" aria-label="Clippy: show or hide desktop tips" aria-expanded="true" aria-controls="clippy-bubble"><svg viewBox="0 0 110 145" aria-hidden="true"><defs><linearGradient id="clip-metal" x1="0" x2="1"><stop stop-color="#6d7077"/><stop offset=".4" stop-color="#f5f5f4"/><stop offset=".65" stop-color="#b8bbc2"/><stop offset="1" stop-color="#696d77"/></linearGradient></defs><ellipse cx="57" cy="137" rx="37" ry="6" fill="#183617" opacity=".22"/><path d="M74 48V25C74 1 29 1 29 28v76c0 35 54 35 54 0V48c0-21-34-21-34 0v53c0 13 17 13 17 0V66" fill="none" stroke="#47434b" stroke-width="12" stroke-linecap="round"/><path d="M74 48V25C74 1 29 1 29 28v76c0 35 54 35 54 0V48c0-21-34-21-34 0v53c0 13 17 13 17 0V66" fill="none" stroke="url(#clip-metal)" stroke-width="8" stroke-linecap="round"/><g class="clippy-eyes" fill="#fffef4" stroke="#39333a" stroke-width="2"><ellipse cx="35" cy="43" rx="15" ry="18"/><ellipse cx="65" cy="42" rx="15" ry="18"/><ellipse cx="39" cy="45" rx="5" ry="8" fill="#25232a" stroke="none"/><ellipse cx="64" cy="44" rx="5" ry="8" fill="#25232a" stroke="none"/></g><path d="M19 20q13-9 24-2M56 17q14-9 25 2" fill="none" stroke="#39333a" stroke-width="4" stroke-linecap="round"/></svg></button>`;
+document.querySelector('#desktop').append(host);
+const bubble=host.querySelector('.clippy-bubble'),character=host.querySelector('.clippy-character'),tip=host.querySelector('#clippy-tip'),go=host.querySelector('#clippy-go');
+const tips=[['projects','Start with My Projects. Open a folder to see what Olayiwola built and the tools behind it.','Explore projects'],['adtivity','Curious about full-stack ownership? Adtivity covers the frontend, backend, and collection SDK.','Open Adtivity'],['gallery','My Pictures contains product screenshots. Select a thumbnail, then use the arrow keys to browse.','View pictures'],['resume','Hiring? Open the résumé for experience and a downloadable PDF.','View résumé'],['contact','Have a project or a role in mind? Contact Me has the email address and a quick copy button.','Get in touch'],['skills','Check System Properties for languages, frameworks, and engineering skills.','See skills']];
+let index=0;
+function render(){const t=tips[index];tip.textContent=t[1];go.textContent=t[2];go.dataset.open=t[0]}
+function setVisible(show){bubble.hidden=!show;character.setAttribute('aria-expanded',String(show));try{sessionStorage.setItem('clippy-dismissed',show?'0':'1')}catch{}}
+host.querySelector('.clippy-dismiss').onclick=()=>setVisible(false);
+character.onclick=()=>setVisible(bubble.hidden);
+host.querySelector('#clippy-next').onclick=()=>{index=(index+1)%tips.length;render()};
+go.addEventListener('click',()=>setVisible(false));
+document.addEventListener('click',e=>{if(host.contains(e.target))return;const key=e.target.closest('[data-open]')?.dataset.open;const match={projects:1,adtivity:2,hoppaz:2,access:2,gallery:3,resume:4,contact:5,skills:0};if(key in match){index=match[key];render()}});
+host.addEventListener('keydown',e=>{if(e.key==='Escape'){setVisible(false);character.focus();e.stopPropagation()}});
+render();try{if(sessionStorage.getItem('clippy-dismissed')==='1')setVisible(false)}catch{}
+})();
